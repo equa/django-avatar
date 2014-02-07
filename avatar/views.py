@@ -1,6 +1,5 @@
 from django.http import Http404
 from django.shortcuts import render, redirect
-from django.utils import six
 from django.utils.translation import ugettext as _
 
 from django.contrib import messages
@@ -134,10 +133,10 @@ def delete(request, extra_context=None, next_override=None, *args, **kwargs):
     if request.method == 'POST':
         if delete_avatar_form.is_valid():
             ids = delete_avatar_form.cleaned_data['choices']
-            if six.text_type(avatar.id) in ids and avatars.count() > len(ids):
+            if unicode(avatar.id) in ids and avatars.count() > len(ids):
                 # Find the next best avatar, and set it as the new primary
                 for a in avatars:
-                    if six.text_type(a.id) not in ids:
+                    if unicode(a.id) not in ids:
                         a.primary = True
                         a.save()
                         avatar_updated.send(sender=Avatar, user=request.user,

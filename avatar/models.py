@@ -3,12 +3,16 @@ import os
 import hashlib
 from PIL import Image
 
+try:
+    from cStringIO import StringIO
+except ImportError:
+    from StringIO import StringIO
+
 from django.db import models
 from django.core.files import File
 from django.core.files.base import ContentFile
 from django.core.files.storage import get_storage_class
 from django.utils.translation import ugettext as _
-from django.utils import six
 from django.db.models import signals
 
 from avatar.conf import settings
@@ -71,7 +75,7 @@ class Avatar(models.Model):
     date_uploaded = models.DateTimeField(default=now)
 
     def __unicode__(self):
-        return _(six.u('Avatar for %s')) % self.user
+        return _(u'Avatar for %s') % self.user
 
     def save(self, *args, **kwargs):
         avatars = Avatar.objects.filter(user=self.user)
@@ -106,7 +110,7 @@ class Avatar(models.Model):
                 if image.mode != "RGB":
                     image = image.convert("RGB")
                 image = image.resize((size, size), settings.AVATAR_RESIZE_METHOD)
-                thumb = six.BytesIO()
+                thumb = StringIO()
                 image.save(thumb, settings.AVATAR_THUMB_FORMAT, quality=quality)
                 thumb_file = ContentFile(thumb.getvalue())
             else:

@@ -9,7 +9,6 @@ except ImportError:
 from django import template
 from django.core.urlresolvers import reverse
 from django.template.loader import render_to_string
-from django.utils import six
 from django.utils.translation import ugettext as _
 
 from avatar.conf import settings
@@ -44,13 +43,13 @@ def avatar(user, size=settings.AVATAR_DEFAULT_SIZE, **kwargs):
     if not isinstance(user, get_user_model()):
         try:
             user = get_user(user)
-            alt = six.text_type(user)
+            alt = unicode(user)
             url = avatar_url(user, size)
         except get_user_model().DoesNotExist:
             url = get_default_avatar_url()
             alt = _("Default Avatar")
     else:
-        alt = six.text_type(user)
+        alt = unicode(user)
         url = avatar_url(user, size)
     context = dict(kwargs, **{
         'user': user,
@@ -77,7 +76,7 @@ def primary_avatar(user, size=settings.AVATAR_DEFAULT_SIZE):
     work for us. If that special view is then cached by a CDN for instance,
     we will avoid many db calls.
     """
-    alt = six.text_type(user)
+    alt = unicode(user)
     url = reverse('avatar_render_primary', kwargs={'user': user, 'size': size})
     return ("""<img src="%s" alt="%s" width="%s" height="%s" />""" %
             (url, alt, size, size))
@@ -89,7 +88,7 @@ def render_avatar(avatar, size=settings.AVATAR_DEFAULT_SIZE):
     if not avatar.thumbnail_exists(size):
         avatar.create_thumbnail(size)
     return """<img src="%s" alt="%s" width="%s" height="%s" />""" % (
-        avatar.avatar_url(size), six.text_type(avatar), size, size)
+        avatar.avatar_url(size), unicode(avatar), size, size)
 
 
 @register.tag
@@ -114,4 +113,4 @@ class UsersAvatarObjectNode(template.Node):
             context[key] = avatar[0]
         else:
             context[key] = None
-        return six.text_type()
+        return unicode()
