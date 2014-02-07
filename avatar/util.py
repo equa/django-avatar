@@ -26,6 +26,7 @@ from avatar.conf import settings
 cached_funcs = set()
 
 
+# XXX remove?
 def get_username(user):
     """ Return username of a User instance """
     if hasattr(user, 'get_username'):
@@ -34,14 +35,12 @@ def get_username(user):
         return user.username
 
 
-def get_user(username):
-    """ Return user from a username/ish identifier """
-    if custom_user_model:
-        return get_user_model().objects.get_by_natural_key(username)
-    else:
-        return get_user_model().objects.get(username=username)
+def get_user(user_id):
+    """ Return user from a user id"""
+    return get_user_model().objects.get(id=user_id)
 
 
+# FIXME
 def get_cache_key(user_or_username, size, prefix):
     """
     Returns a cache key consisten of a username and image size.

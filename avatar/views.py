@@ -158,9 +158,9 @@ def delete(request, extra_context=None, next_override=None, *args, **kwargs):
     return render(request, 'avatar/confirm_delete.html', context)
 
 
-def avatar_gallery(request, username, template_name="avatar/gallery.html"):
+def avatar_gallery(request, user_id, template_name="avatar/gallery.html"):
     try:
-        user = get_user(username)
+        user = get_user(user_id)
     except get_user_model().DoesNotExist:
         raise Http404
 
@@ -172,9 +172,9 @@ def avatar_gallery(request, username, template_name="avatar/gallery.html"):
     return render(request, template_name, context)
 
 
-def avatar(request, username, id, template_name="avatar/avatar.html"):
+def avatar(request, user_id, id, template_name="avatar/avatar.html"):
     try:
-        user = get_user(username)
+        user = get_user(user_id)
     except get_user_model().DoesNotExist:
         raise Http404
     avatars = user.avatar_set.order_by("-date_uploaded")
@@ -217,9 +217,9 @@ def avatar(request, username, id, template_name="avatar/avatar.html"):
     })
 
 
-def render_primary(request, user=None, size=settings.AVATAR_DEFAULT_SIZE):
+def render_primary(request, user_id=None, size=settings.AVATAR_DEFAULT_SIZE):
     size = int(size)
-    avatar = get_primary_avatar(user, size=size)
+    avatar = get_primary_avatar(user_id, size=size)
     if avatar:
         # FIXME: later, add an option to render the resized avatar dynamically
         # instead of redirecting to an already created static file. This could

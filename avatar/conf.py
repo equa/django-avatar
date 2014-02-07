@@ -17,7 +17,7 @@ class AvatarConf(AppConf):
     THUMB_FORMAT = 'JPEG'
     THUMB_QUALITY = 85
     HASH_FILENAMES = False
-    HASH_USERDIRNAMES = False
+    HASH_USERDIRNAMES = True
     ALLOWED_FILE_EXTS = None
     CACHE_TIMEOUT = 60 * 60
     STORAGE = settings.DEFAULT_FILE_STORAGE
