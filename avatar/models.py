@@ -16,7 +16,7 @@ from django.utils.translation import ugettext as _
 from django.db.models import signals
 
 from avatar.conf import settings
-from avatar.util import get_username, force_bytes, invalidate_cache
+from avatar.util import force_bytes, invalidate_cache
 
 try:
     from django.utils.timezone import now
@@ -29,11 +29,9 @@ avatar_storage = get_storage_class(settings.AVATAR_STORAGE)()
 
 def avatar_file_path(instance=None, filename=None, size=None, ext=None):
     tmppath = [settings.AVATAR_STORAGE_DIR]
-    if settings.AVATAR_HASH_USERDIRNAMES:
-        tmp = hashlib.md5(get_username(instance.user)).hexdigest()
-        tmppath.extend([tmp[0], tmp[1], get_username(instance.user)])
-    else:
-        tmppath.append(get_username(instance.user))
+    userdir = hashlib.md5(settings.SECRET_KEY + str(instance.user.id)).hexdigest()
+    tmppath.extend([userdir])
+
     if not filename:
         # Filename already stored in database
         filename = instance.avatar.name
